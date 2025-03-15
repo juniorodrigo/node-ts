@@ -1,20 +1,12 @@
 {
 	"compilerOptions": {
-		"target": "ES2022",
+		"target": "ESNext",
 		"module": "NodeNext",
-		"moduleResolution": "NodeNext",
-		"esModuleInterop": true,
-		"forceConsistentCasingInFileNames": true,
 		"strict": true,
+		"verbatimModuleSyntax": true,
 		"skipLibCheck": true,
-		"outDir": "./dist",
-		"rootDir": "source",
-		"baseUrl": "./",
-		"paths": {
-			"@services/*": ["source/services/*"],
-			"@utils/*": ["source/utils/*"]
-		}
-	},
-	"include": ["source/**/*"],
-	"exclude": ["node_modules"]
+		"types": ["node"],
+		"jsx": "react-jsx",
+		"jsxImportSource": "hono/jsx"
+	}
 }
