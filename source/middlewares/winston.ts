@@ -2,7 +2,12 @@ import { createLogger, format, transports } from 'winston';
 import path from 'path';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import fs from 'fs';
-import { type Request, type Response, type NextFunction, type RequestHandler } from 'express';
+import { type RequestHandler } from 'express';
+import { fileURLToPath } from 'url';
+
+// Crear equivalente a __dirname para módulos ES
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Define las rutas para los archivos de logs en la raíz del proyecto
 const logDirectory: string = path.join(__dirname, '../../logs');
