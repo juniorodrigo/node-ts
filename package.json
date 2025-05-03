@@ -1,5 +1,6 @@
 {
-	"name": "pws-be-lc",
+	"name": "nodets-app",
+	"description": "Scaffold de Node+Express+TS a partir de mi repositorio base",
 	"type": "module",
 	"scripts": {
 		"dev": "tsx watch source/index.ts",
