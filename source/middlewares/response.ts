@@ -52,20 +52,31 @@ const logger = createLogger({
 	],
 });
 
-const wistonMiddleware: RequestHandler = (req, res, next) => {
-	res.success = (message = 'success', data = null) => {
-		const response = {
-			status: 'success',
+const responseMiddleware: RequestHandler = (req, res, next) => {
+	res.success = (data = null, message = 'success', resultsCount) => {
+		const response: { success: boolean; data?: unknown; message?: string; resultsCount?: number } = {
+			success: true,
 			message,
-			data,
 		};
+
+		if (data !== null) {
+			response.data = data;
+		}
+
+		if (message) response.message = message;
+
+		if (Array.isArray(data)) {
+			response.resultsCount = resultsCount || data.length;
+		} else if (resultsCount !== undefined) {
+			response.resultsCount = resultsCount;
+		}
 
 		logger.info(`Success - ${req.method} ${req.url}`, { data });
 
 		return res.status(200).json(response);
 	};
 
-	res.error = (error: Error | string, statusCode = 500) => {
+	res.error = (error: Error | string, statusCode = 400) => {
 		const errorMessage = typeof error === 'string' ? error : error.message;
 		const stack = error instanceof Error ? error.stack : null;
 
@@ -83,4 +94,4 @@ const wistonMiddleware: RequestHandler = (req, res, next) => {
 	next();
 };
 
-export { logger, wistonMiddleware };
+export default responseMiddleware;
