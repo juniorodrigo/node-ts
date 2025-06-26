@@ -1,3 +1,4 @@
+import 'express-async-errors';
 import { env } from './config/env.js';
 import express from 'express';
 import type { Express } from 'express';
