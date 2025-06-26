@@ -3,7 +3,7 @@ import 'express';
 declare global {
 	namespace Express {
 		interface Response {
-			success(message?: string, data?: unknown): this;
+			success(data?: unknown, message?: string, resultsCount?: number): this;
 			error(error: Error | string, statusCode?: number): this;
 		}
 	}

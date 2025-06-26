@@ -81,8 +81,8 @@ const responseMiddleware: RequestHandler = (req, res, next) => {
 		const stack = error instanceof Error ? error.stack : null;
 
 		const response = {
-			status: 'error',
-			error: errorMessage,
+			success: false,
+			message: errorMessage,
 			stack: process.env.NODE_ENV === 'production' ? null : stack,
 		};
 
