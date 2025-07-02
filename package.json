@@ -13,6 +13,8 @@
 		"express": "^4.21.2",
 		"express-async-errors": "^3.1.1",
 		"helmet": "^8.1.0",
+		"swagger-jsdoc": "^6.2.8",
+		"swagger-ui-express": "^5.0.1",
 		"winston": "^3.17.0",
 		"winston-daily-rotate-file": "^5.0.0",
 		"zod": "^3.24.3",
@@ -23,6 +25,8 @@
 		"@types/cors": "^2.8.19",
 		"@types/express": "^5.0.0",
 		"@types/node": "^20.11.17",
+		"@types/swagger-jsdoc": "^6.0.4",
+		"@types/swagger-ui-express": "^4.1.8",
 		"tsx": "^4.7.1"
 	},
 	"packageManager": "pnpm@9.11.0+sha512.0a203ffaed5a3f63242cd064c8fb5892366c103e328079318f78062f24ea8c9d50bc6a47aa3567cabefd824d170e78fa2745ed1f16b132e16436146b7688f19b"
