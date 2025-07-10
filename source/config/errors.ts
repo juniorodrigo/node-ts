@@ -15,17 +15,20 @@ export class AppError extends Error {
 export class ValidationError extends AppError {
 	constructor(message: string) {
 		super(message, 400);
+		this.isOperational = true;
 	}
 }
 
 export class AuthError extends AppError {
 	constructor(message = 'No autorizado') {
 		super(message, 401);
+		this.isOperational = true;
 	}
 }
 
 export class NotFoundError extends AppError {
 	constructor(message = 'Recurso no encontrado') {
 		super(message, 404);
+		this.isOperational = true;
 	}
 }
