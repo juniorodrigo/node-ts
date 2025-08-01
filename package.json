@@ -4,15 +4,19 @@
 	"type": "module",
 	"scripts": {
 		"dev": "tsx watch source/index.ts",
-		"dev:rag": "tsx src/embedding/index.ts"
+		"prisma:generate": "prisma generate",
+		"prisma:migrate": "prisma migrate dev --name test-migration",
+		"prisma:studio": "prisma studio"
 	},
 	"dependencies": {
+		"@prisma/client": "^6.13.0",
 		"body-parser": "^1.20.3",
 		"cors": "^2.8.5",
 		"dotenv": "^16.4.7",
 		"express": "^4.21.2",
 		"express-async-errors": "^3.1.1",
 		"helmet": "^8.1.0",
+		"prisma": "^6.13.0",
 		"swagger-jsdoc": "^6.2.8",
 		"swagger-ui-express": "^5.0.1",
 		"winston": "^3.17.0",
