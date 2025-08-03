@@ -34,8 +34,6 @@ export function customParse<T>(
 }
 
 function buildErrorMessage(errors: FriendlyError[]): string {
-	console.log('---', errors, '---');
-
 	const missingOrNullErroredFields = {
 		errors: [] as FriendlyError[],
 		prefix: 'Field',

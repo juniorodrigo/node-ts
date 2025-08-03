@@ -12,6 +12,10 @@
 			"@ops/*": ["source/services/ops/*"]
 		},
 		"baseUrl": ".",
-		"jsxImportSource": "hono/jsx"
+		"jsxImportSource": "hono/jsx",
+		"outDir": "./dist",
+		"rootDir": "./source",
+		"resolveJsonModule": true,
+		"esModuleInterop": true
 	}
 }
