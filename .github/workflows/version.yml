@@ -1,0 +1,54 @@
+name: Version and Tag
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/nodex-ts/**'
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install dependencies
+        run: |
+          cd packages/nodex-ts
+          npm install
+
+      - name: Version bump
+        run: |
+          cd packages/nodex-ts
+
+          # Determinar tipo de cambio basado en commit messages
+          if git log --format=%B -n 1 | grep -q "BREAKING CHANGE\|!:"; then
+            npm version major
+          elif git log --format=%B -n 1 | grep -q "^feat"; then
+            npm version minor
+          else
+            npm version patch
+          fi
+
+          # Obtener nueva versión
+          NEW_VERSION=$(node -p "require('./package.json').version")
+
+          # Crear tag
+          git tag "v$NEW_VERSION"
+          git push origin "v$NEW_VERSION"
+          git push origin main
