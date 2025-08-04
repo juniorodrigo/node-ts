@@ -80,12 +80,26 @@ async function createApp() {
 			console.log('🔧 Archivo .env creado desde .env.example');
 		}
 
+		// Instalar dependencias automáticamente
+		console.log('📦 Instalando dependencias...');
+		try {
+			// Cambiar al directorio del proyecto e instalar dependencias
+			execSync('pnpm install', {
+				cwd: targetDir,
+				stdio: 'inherit', // Esto muestra la salida de pnpm en tiempo real
+			});
+			console.log('✅ Dependencias instaladas correctamente!');
+		} catch (installError) {
+			console.log('⚠️  No se pudieron instalar las dependencias automáticamente.');
+			console.log('   Puedes instalarlas manualmente ejecutando:');
+			console.log(`   cd ${projectName} && pnpm install`);
+		}
+
 		console.log('✅ Proyecto creado exitosamente!');
 		console.log('');
 		console.log('📋 Próximos pasos:');
 		console.log(`   cd ${projectName}`);
-		console.log('   pnpm install  (o npm install)');
-		console.log('   pnpm dev      (o npm run dev)');
+		console.log('   pnpm dev      (para iniciar el servidor de desarrollo)');
 		console.log('');
 		console.log('¡Feliz programación!');
 	} catch (error) {
