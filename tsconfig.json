@@ -17,5 +17,6 @@
 		"rootDir": "./source",
 		"resolveJsonModule": true,
 		"esModuleInterop": true
-	}
+	},
+	"exclude": ["packages/**/*", "node_modules", "dist", "logs"]
 }

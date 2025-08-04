@@ -1,0 +1,48 @@
+{
+	"name": "nodex-ts",
+	"version": "1.0.6",
+	"description": "Plantilla de Node.js con TypeScript y Express para crear aplicaciones de backend",
+	"bin": {
+		"nodex-ts": "./bin/nodex-ts.js"
+	},
+	"files": [
+		"bin",
+		"template",
+		"scripts"
+	],
+	"scripts": {
+		"sync-template": "node scripts/sync-template.js",
+		"prebuild": "npm run sync-template",
+		"prepublishOnly": "npm run sync-template"
+	},
+	"keywords": [
+		"nodejs",
+		"typescript",
+		"express",
+		"template",
+		"scaffold",
+		"boilerplate",
+		"starter"
+	],
+	"author": "Junior Rodrigo",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/juniorodrigo/node-ts.git",
+		"directory": "packages/nodets-template"
+	},
+	"homepage": "https://github.com/juniorodrigo/node-ts#readme",
+	"bugs": {
+		"url": "https://github.com/juniorodrigo/node-ts/issues"
+	},
+	"dependencies": {
+		"fs-extra": "^11.2.0"
+	},
+	"devDependencies": {
+		"@types/fs-extra": "^11.0.4",
+		"@types/node": "^20.11.17"
+	},
+	"engines": {
+		"node": ">=16.0.0"
+	}
+}

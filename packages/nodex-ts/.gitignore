@@ -1,0 +1,20 @@
+# Archivos generados automáticamente
+template/base/
+
+# Mantener la estructura de carpetas
+!template/.gitkeep
+
+# Dependencias
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Archivos temporales
+.tmp/
+.cache/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
