@@ -23,6 +23,8 @@ async function syncTemplate() {
 		'build', // No incluir archivos de build
 		'.env', // No incluir variables de entorno específicas
 		'.DS_Store', // No incluir archivos del sistema
+		'.github', // No incluir workflows de GitHub
+		'.vscode', // No incluir configuraciones de VSCode
 	];
 
 	try {
