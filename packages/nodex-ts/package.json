@@ -13,7 +13,14 @@
 	"scripts": {
 		"sync-template": "node scripts/sync-template.js",
 		"prebuild": "npm run sync-template",
-		"prepublishOnly": "npm run sync-template"
+		"prepublishOnly": "npm run sync-template",
+		"build": "node bin/nodex-ts.js",
+		"test": "echo \"No tests specified\" && exit 0",
+		"version": "npm run build && git add -A",
+		"postversion": "git push && git push --tags",
+		"release:patch": "npm version patch && git push --follow-tags",
+		"release:minor": "npm version minor && git push --follow-tags",
+		"release:major": "npm version major && git push --follow-tags"
 	},
 	"keywords": [
 		"nodejs",
