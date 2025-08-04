@@ -1,6 +1,6 @@
 {
 	"name": "nodex-ts",
-	"version": "1.0.7",
+	"version": "1.0.8",
 	"description": "Plantilla de Node.js con TypeScript y Express para crear aplicaciones de backend",
 	"bin": {
 		"nodex-ts": "./bin/nodex-ts.js"
@@ -11,16 +11,15 @@
 		"scripts"
 	],
 	"scripts": {
-		"sync-template": "node scripts/sync-template.js",
-		"prebuild": "npm run sync-template",
-		"prepublishOnly": "npm run sync-template",
 		"build": "node bin/nodex-ts.js",
+		"sync-template": "node scripts/sync-template.js",
+		"prepublishOnly": "npm run sync-template",
 		"test": "echo \"No tests specified\" && exit 0",
-		"version": "npm run build && git add -A",
+		"version": "npm run sync-template && git add template/",
 		"postversion": "git push && git push --tags",
-		"release:patch": "npm version patch && git push --follow-tags",
-		"release:minor": "npm version minor && git push --follow-tags",
-		"release:major": "npm version major && git push --follow-tags"
+		"release:patch": "npm version patch && npm publish",
+		"release:minor": "npm version minor && npm publish",
+		"release:major": "npm version major && npm publish"
 	},
 	"keywords": [
 		"nodejs",
