@@ -82,15 +82,27 @@ async function createApp() {
 
 		// Instalar dependencias automáticamente
 		console.log('📦 Instalando dependencias...');
+
+		// Mostrar indicador de progreso
+		const progressChars = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+		let progressIndex = 0;
+		const progressInterval = setInterval(() => {
+			process.stdout.write(`\r${progressChars[progressIndex]} Instalando dependencias...`);
+			progressIndex = (progressIndex + 1) % progressChars.length;
+		}, 100);
+
 		try {
 			// Cambiar al directorio del proyecto e instalar dependencias
 			execSync('pnpm install', {
 				cwd: targetDir,
-				stdio: 'inherit', // Esto muestra la salida de pnpm en tiempo real
+				stdio: 'pipe', // Oculta la salida de pnpm
 			});
-			console.log('✅ Dependencias instaladas correctamente!');
+
+			clearInterval(progressInterval);
+			process.stdout.write('\r✅ Dependencias instaladas correctamente!           \n');
 		} catch (installError) {
-			console.log('⚠️  No se pudieron instalar las dependencias automáticamente.');
+			clearInterval(progressInterval);
+			process.stdout.write('\r⚠️  No se pudieron instalar las dependencias automáticamente.\n');
 			console.log('   Puedes instalarlas manualmente ejecutando:');
 			console.log(`   cd ${projectName} && pnpm install`);
 		}
