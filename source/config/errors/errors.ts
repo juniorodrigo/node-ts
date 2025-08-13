@@ -1,13 +1,13 @@
 export class AppError extends Error {
 	statusCode: number;
 	isOperational: boolean;
+	public readonly options?: { retryable?: boolean; status?: number; meta?: unknown };
 
 	constructor(message: string, statusCode = 400) {
 		super(message);
 		this.statusCode = statusCode;
 		this.isOperational = true;
 
-		// Para que se capture bien la pila
 		Error.captureStackTrace(this, this.constructor);
 	}
 }

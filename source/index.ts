@@ -1,4 +1,5 @@
 import 'express-async-errors';
+import './config/logger.js';
 import { env } from './config/env.js';
 import express from 'express';
 import type { Express } from 'express';
@@ -40,5 +41,5 @@ app.use('/', router);
 app.use(errorHandler);
 
 app.listen(env.port, () => {
-	console.log(`[server]: Server is running at http://localhost:${env.port}`);
+	logger.info(`[server]: Server is running at http://localhost:${env.port}`);
 });

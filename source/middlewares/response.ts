@@ -1,57 +1,5 @@
-import { createLogger, format, transports } from 'winston';
-import path from 'path';
-import DailyRotateFile from 'winston-daily-rotate-file';
-import fs from 'fs';
 import { type RequestHandler, type CookieOptions } from 'express';
-import { fileURLToPath } from 'url';
 import type { CookieConfig, ResponseWithCookies } from '@/types/cookies.js';
-
-// Crear equivalente a __dirname para módulos ES
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Define las rutas para los archivos de logs en la raíz del proyecto
-const logDirectory: string = path.join(__dirname, '../../logs');
-const combinedLogPath: string = path.join(logDirectory, 'combined');
-const errorLogPath: string = path.join(logDirectory, 'error');
-
-// Crear las carpetas de logs si no existen
-if (!fs.existsSync(combinedLogPath)) {
-	fs.mkdirSync(combinedLogPath, { recursive: true });
-}
-if (!fs.existsSync(errorLogPath)) {
-	fs.mkdirSync(errorLogPath, { recursive: true });
-}
-
-// Configuración del logger
-export const logger = createLogger({
-	level: 'info',
-	format: format.combine(
-		format.timestamp(),
-		format.printf(({ timestamp, level, message }) => {
-			return `${timestamp} [${level}]: ${message}`;
-		})
-	),
-	transports: [
-		new transports.Console(),
-		new DailyRotateFile({
-			filename: path.join(errorLogPath, 'error-%DATE%.log'),
-			datePattern: 'DD-MM-YY',
-			level: 'error',
-			zippedArchive: true,
-			maxSize: '20m',
-			maxFiles: '90d',
-		}),
-		new DailyRotateFile({
-			filename: path.join(combinedLogPath, 'combined-%DATE%.log'),
-			datePattern: 'DD-MM-YY',
-			level: 'info',
-			zippedArchive: true,
-			maxSize: '20m',
-			maxFiles: '90d',
-		}),
-	],
-});
 
 // Configuraciones por defecto para cookies
 const defaultCookieOptions: CookieOptions = {
