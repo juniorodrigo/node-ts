@@ -6,15 +6,20 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../source/prisma/prisma"
+  output   = "../src/lib/prisma/prisma"
 }
 
 generator zod {
   provider = "zod-prisma-types"
-  output   = "../source/prisma/zod"
+  output   = "../src/prisma/zod"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Greetings {
+  id   Int    @id @default(autoincrement())
+  text String
 }
