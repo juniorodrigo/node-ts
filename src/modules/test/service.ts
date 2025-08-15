@@ -1,9 +1,12 @@
 import type { ServiceResponse } from 'src/types/service.js';
 import type { Test, TestResponse } from './schemas.js';
+import { addTwoNumbers } from '@/utils/index.js';
 
 async function getTestData(data: Test): Promise<ServiceResponse<TestResponse>> {
-	// Simulate fetching data, e.g., from a database or an external API
-	return { message: 'Test data retrieved successfully!', data: { youAreA: 'idiot' } };
+	logger.info('Received test data', { data });
+	const result = addTwoNumbers(1, 2);
+
+	return { message: 'Test data retrieved successfully!', data: { result } };
 }
 
 export const TestService = {

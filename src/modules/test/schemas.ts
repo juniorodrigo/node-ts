@@ -6,6 +6,6 @@ export const TestSchema = z.object({
 export type Test = z.infer<typeof TestSchema>;
 
 export const TestResponseSchema = z.object({
-	youAreA: z.string(),
+	result: z.number(),
 });
 export type TestResponse = z.infer<typeof TestResponseSchema>;
