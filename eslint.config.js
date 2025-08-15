@@ -17,6 +17,7 @@ export default [
       "node_modules/**/*",
       "*.config.js",
       "!eslint.config.js",
+      "src/lib/prisma/**/*"
     ],
   },
 

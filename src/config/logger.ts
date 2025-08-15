@@ -81,45 +81,45 @@ const pinoConfig: pino.LoggerOptions = {
 const logger = pino(pinoConfig);
 
 // Función para crear un logger global
-const createGlobalLogger = () => {
+const createGlobalLogger = (): any => {
 	const globalLogger = {
 		// Métodos estándar de Pino
-		trace: (message: string, meta?: any) => {
+		trace: (message: string, meta?: Record<string, unknown>): void => {
 			if (meta) {
 				logger.trace(meta, message);
 			} else {
 				logger.trace(message);
 			}
 		},
-		debug: (message: string, meta?: any) => {
+		debug: (message: string, meta?: Record<string, unknown>): void => {
 			if (meta) {
 				logger.debug(meta, message);
 			} else {
 				logger.debug(message);
 			}
 		},
-		info: (message: string, meta?: any) => {
+		info: (message: string, meta?: Record<string, unknown>): void => {
 			if (meta) {
 				logger.info(meta, message);
 			} else {
 				logger.info(message);
 			}
 		},
-		warn: (message: string, meta?: any) => {
+		warn: (message: string, meta?: Record<string, unknown>): void => {
 			if (meta) {
 				logger.warn(meta, message);
 			} else {
 				logger.warn(message);
 			}
 		},
-		error: (message: string, meta?: any) => {
+		error: (message: string, meta?: Record<string, unknown>): void => {
 			if (meta) {
 				logger.error(meta, message);
 			} else {
 				logger.error(message);
 			}
 		},
-		fatal: (message: string, meta?: any) => {
+		fatal: (message: string, meta?: Record<string, unknown>): void => {
 			if (meta) {
 				logger.fatal(meta, message);
 			} else {
@@ -128,26 +128,26 @@ const createGlobalLogger = () => {
 		},
 
 		// Método personalizado para logs de desarrollo
-		log: (message: string, ...args: any[]) => {
+		log: (message: string, ...args: unknown[]): void => {
 			if (isDev) {
 				logger.debug({ args }, message);
 			}
 		},
 
 		// Método para logs de éxito
-		success: (message: string, meta?: any) => {
+		success: (message: string, meta?: Record<string, unknown>): void => {
 			const logData = { success: true, ...meta };
 			logger.info(logData, message);
 		},
 
 		// Método para request logging
-		request: (method: string, url: string, meta?: any) => {
+		request: (method: string, url: string, meta?: Record<string, unknown>): void => {
 			const logData = { request: true, method, url, ...meta };
 			logger.info(logData, `${method} ${url}`);
 		},
 
 		// Método para response logging
-		response: (method: string, url: string, statusCode: number, meta?: any) => {
+		response: (method: string, url: string, statusCode: number, meta?: Record<string, unknown>): void => {
 			const logData = { response: true, method, url, statusCode, ...meta };
 			const level = statusCode >= 400 ? 'error' : 'info';
 			if (level === 'error') {

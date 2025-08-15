@@ -1,4 +1,4 @@
-import { type RequestHandler, type CookieOptions } from 'express';
+import { type RequestHandler, type CookieOptions, type Response } from 'express';
 
 import type { CookieConfig, ResponseWithCookies } from '@/types/cookies.js';
 
@@ -11,7 +11,7 @@ const defaultCookieOptions: CookieOptions = {
 };
 
 // Función auxiliar para procesar cookies
-const processCookies = (res: any, responseData?: ResponseWithCookies) => {
+const processCookies = (res: Response, responseData?: ResponseWithCookies): void => {
 	if (responseData?.cookies) {
 		responseData.cookies.forEach(({ name, value, options }) => {
 			const cookieOptions = { ...defaultCookieOptions, ...options };
@@ -27,7 +27,11 @@ const processCookies = (res: any, responseData?: ResponseWithCookies) => {
 };
 
 const responseMiddleware: RequestHandler = (req, res, next) => {
-	res.success = (data = null, message = 'success', responseOptions?: ResponseWithCookies) => {
+	res.success = (
+		data: unknown = null,
+		message = 'success',
+		responseOptions?: ResponseWithCookies
+	): Response => {
 		try {
 			// Procesar cookies antes de enviar la respuesta
 			processCookies(res, responseOptions);
@@ -63,7 +67,7 @@ const responseMiddleware: RequestHandler = (req, res, next) => {
 		}
 	};
 
-	res.error = (error: Error | string, statusCode = 400, responseOptions?: ResponseWithCookies) => {
+	res.error = (error: Error | string, statusCode = 400, responseOptions?: ResponseWithCookies): Response => {
 		// Procesar cookies antes de enviar la respuesta de error
 		processCookies(res, responseOptions);
 
@@ -87,13 +91,13 @@ const responseMiddleware: RequestHandler = (req, res, next) => {
 	};
 
 	// Métodos de conveniencia para manejar cookies
-	res.setCookie = (name: string, value: string, options?: CookieOptions) => {
+	res.setCookie = (name: string, value: string, options?: CookieOptions): Response => {
 		const cookieOptions = { ...defaultCookieOptions, ...options };
 		res.cookie(name, value, cookieOptions);
 		return res;
 	};
 
-	res.setSecureCookie = (name: string, value: string, options?: CookieOptions) => {
+	res.setSecureCookie = (name: string, value: string, options?: CookieOptions): Response => {
 		const secureOptions = {
 			...defaultCookieOptions,
 			httpOnly: true,
@@ -105,7 +109,7 @@ const responseMiddleware: RequestHandler = (req, res, next) => {
 		return res;
 	};
 
-	res.removeCookie = (name: string, options?: CookieOptions) => {
+	res.removeCookie = (name: string, options?: CookieOptions): Response => {
 		res.clearCookie(name, options);
 		return res;
 	};

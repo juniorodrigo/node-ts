@@ -18,5 +18,5 @@
 		"resolveJsonModule": true,
 		"esModuleInterop": true
 	},
-	"exclude": ["packages/**/*", "node_modules", "dist", "logs"]
+	"exclude": ["packages/**/*", "node_modules", "dist", "logs", "src/lib/prisma/**/*"]
 }

@@ -2,7 +2,7 @@ name: Version and Tag
 
 on:
   push:
-    branches: [main]
+    branches: [version]
     paths:
       - 'packages/nodex-ts/**'
 

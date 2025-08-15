@@ -1,4 +1,4 @@
-import type { z} from 'zod';
+import type { z } from 'zod';
 import { ZodIssueCode } from 'zod';
 
 interface FriendlyError {
@@ -26,8 +26,8 @@ export function customParse<T>(
 	const errors: FriendlyError[] = result.error.issues.map((issue) => ({
 		field: issue.path.length > 0 ? issue.path.join('.') : 'root',
 		code: issue.code,
-		expected: (issue as any).expected || undefined,
-		received: (issue as any).received || undefined,
+		expected: (issue as any).expected ?? undefined,
+		received: (issue as any).received ?? undefined,
 		message: issue.message.toLowerCase(),
 	}));
 
