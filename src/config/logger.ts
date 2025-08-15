@@ -1,7 +1,9 @@
-import pino from 'pino';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
 import { fileURLToPath } from 'url';
+
+import pino from 'pino';
+
 import { env } from './env.js';
 
 // Crear equivalente a __dirname para módulos ES

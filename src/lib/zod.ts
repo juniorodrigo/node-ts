@@ -1,4 +1,5 @@
-import { z, ZodIssueCode } from 'zod';
+import type { z} from 'zod';
+import { ZodIssueCode } from 'zod';
 
 interface FriendlyError {
 	field: string;

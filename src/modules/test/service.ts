@@ -1,5 +1,6 @@
-import type { ServiceResponse } from '@/types/service.js';
 import type { Test, TestResponse } from './schemas.js';
+
+import type { ServiceResponse } from '@/types/service.js';
 import { addTwoNumbers } from '@/utils/index.js';
 
 async function getTestData(data: Test): Promise<ServiceResponse<TestResponse>> {

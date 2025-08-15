@@ -1,8 +1,10 @@
 import type { Request, Response } from 'express';
-import { TestService } from './service.js';
-import { customParse } from '@/lib/zod.js';
-import { ValidationError } from '@/config/errors/errors.js';
+
 import { TestSchema } from './schemas.js';
+import { TestService } from './service.js';
+
+import { ValidationError } from '@/config/errors/errors.js';
+import { customParse } from '@/lib/zod.js';
 
 export async function testController(req: Request, res: Response) {
 	const { body } = req;

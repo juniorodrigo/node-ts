@@ -1,11 +1,14 @@
-import express from 'express';
-import cors from 'cors';
 import bodyParser from 'body-parser';
-import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
-import responseMiddleware from './response.js';
-import errorHandler from '@/config/errors/express-handler.js';
 import compression from 'compression';
+import cors from 'cors';
+import type express from 'express';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
+
+import responseMiddleware from './response.js';
+
+import errorHandler from '@/config/errors/express-handler.js';
+
 
 const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutos

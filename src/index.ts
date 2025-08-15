@@ -1,11 +1,12 @@
 import 'express-async-errors';
 import './config/logger.js';
-import { env } from './config/env.js';
 import express from 'express';
 import type { Express } from 'express';
-import router from './routes.js';
-import { configureMiddlewares, errorHandler } from './middlewares/index.js';
+
+import { env } from './config/env.js';
 import { swaggerUi, specs } from './config/swagger.js';
+import { configureMiddlewares, errorHandler } from './middlewares/index.js';
+import router from './routes.js';
 
 const app: Express = express();
 

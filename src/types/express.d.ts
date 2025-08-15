@@ -1,5 +1,5 @@
-import 'express';
-import { CookieOptions } from 'express';
+import type { CookieOptions } from 'express';
+
 import type { ResponseWithCookies } from './cookies.ts';
 
 declare global {
