@@ -95,11 +95,25 @@ async function createApp() {
 			// Cambiar al directorio del proyecto e instalar dependencias
 			execSync('pnpm install', {
 				cwd: targetDir,
-				stdio: 'pipe', // Oculta la salida de pnpm
+				stdio: 'pipe',
 			});
 
 			clearInterval(progressInterval);
 			process.stdout.write('\r✅ Dependencias instaladas correctamente!           \n');
+
+			// Ejecutar prisma generate
+			console.log('🔧 Generando cliente de Prisma...');
+			try {
+				execSync('npx prisma generate', {
+					cwd: targetDir,
+					stdio: 'pipe', // Modo headless/oculto
+				});
+				console.log('✅ Cliente de Prisma generado correctamente!');
+			} catch (prismaError) {
+				console.log('⚠️  No se pudo generar el cliente de Prisma automáticamente.');
+				console.log('   Puedes generarlo manualmente ejecutando:');
+				console.log(`   cd ${projectName} && npx prisma generate`);
+			}
 		} catch (installError) {
 			clearInterval(progressInterval);
 			process.stdout.write('\r⚠️  No se pudieron instalar las dependencias automáticamente.\n');

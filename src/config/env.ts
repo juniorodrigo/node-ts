@@ -1,4 +1,3 @@
-import { log } from 'console';
 import * as dotenv from 'dotenv';
 import { z } from 'zod';
 dotenv.config();

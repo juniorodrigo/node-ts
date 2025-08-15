@@ -1,5 +1,5 @@
 import { type RequestHandler, type CookieOptions } from 'express';
-import type { CookieConfig, ResponseWithCookies } from 'src/types/cookies.js';
+import type { CookieConfig, ResponseWithCookies } from '@/types/cookies.js';
 
 // Configuraciones por defecto para cookies
 const defaultCookieOptions: CookieOptions = {

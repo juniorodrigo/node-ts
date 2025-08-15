@@ -1,4 +1,4 @@
-import type { ServiceResponse } from 'src/types/service.js';
+import type { ServiceResponse } from '@/types/service.js';
 import type { Test, TestResponse } from './schemas.js';
 import { addTwoNumbers } from '@/utils/index.js';
 

@@ -39,7 +39,7 @@ const pinoConfig: pino.LoggerOptions = {
 					ignore: 'pid,hostname',
 					messageFormat: '{msg}',
 				},
-		  }
+			}
 		: {
 				targets: [
 					// Transport para archivo de logs combinados
@@ -72,7 +72,7 @@ const pinoConfig: pino.LoggerOptions = {
 						},
 					},
 				],
-		  },
+			},
 };
 
 // Crear el logger
@@ -159,7 +159,6 @@ const createGlobalLogger = () => {
 	return globalLogger;
 };
 
-// Crear el logger global
 const globalLogger = createGlobalLogger();
 
 // Hacer el logger disponible globalmente
@@ -167,8 +166,6 @@ declare global {
 	var logger: typeof globalLogger;
 }
 
-// Asignar a global
 globalThis.logger = globalLogger;
 
-// También exportar para uso directo si es necesario
 export default globalLogger;

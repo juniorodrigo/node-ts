@@ -3,15 +3,21 @@
 	"description": "Scaffold de Node+Express+TS a partir de mi repositorio base",
 	"type": "module",
 	"scripts": {
-		"dev": "tsx watch source/index.ts",
-		"build": "tsc",
+		"dev": "tsx watch src/index.ts",
+		"build": "tsc && tsc-alias",
 		"start": "node dist/index.js",
-		"lint": "eslint source/**/*.ts",
+		"lint": "eslint src/**/*.ts",
+		"lint:fix": "eslint . --ext .ts,.js --fix",
 		"test": "jest",
 		"typecheck": "tsc --noEmit",
 		"prisma:generate": "prisma generate",
 		"prisma:migrate": "prisma migrate dev --name test-migration",
-		"prisma:studio": "prisma studio"
+		"prisma:studio": "prisma studio",
+		"format": "prettier --write \"src/**/*.{ts,js}\" \"test/**/*.{ts,js}\"",
+		"format:check": "prettier --check \"src/**/*.{ts,js}\" \"test/**/*.{ts,js}\"",
+		"check": "pnpm run typecheck && pnpm run lint && pnpm run format:check",
+		"commitlint": "commitlint --from=HEAD~1 --to=HEAD",
+		"prepare": "husky install"
 	},
 	"dependencies": {
 		"@prisma/client": "^6.13.0",
@@ -34,6 +40,9 @@
 		"zod-prisma-types": "^3.2.4"
 	},
 	"devDependencies": {
+		"@commitlint/cli": "^19.5.0",
+		"@commitlint/config-conventional": "^19.5.0",
+		"@eslint/js": "^9.9.0",
 		"@types/body-parser": "^1.19.5",
 		"@types/compression": "^1.8.1",
 		"@types/cors": "^2.8.19",
@@ -41,6 +50,16 @@
 		"@types/node": "^20.11.17",
 		"@types/swagger-jsdoc": "^6.0.4",
 		"@types/swagger-ui-express": "^4.1.8",
+		"@typescript-eslint/eslint-plugin": "^8.39.1",
+		"@typescript-eslint/parser": "^8.39.1",
+		"cpx": "^1.5.0",
+		"eslint": "^9.33.0",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-import-resolver-typescript": "3",
+		"eslint-plugin-import": "^2.32.0",
+		"husky": "^9.1.7",
+		"prettier": "^3.6.2",
+		"tsc-alias": "^1.8.16",
 		"tsx": "^4.7.1",
 		"typescript": "^5.3.3"
 	},
