@@ -18,7 +18,6 @@ async function syncTemplate() {
 		'.git', // No incluir historial de git
 		'logs', // No incluir logs específicos del proyecto
 		'.claude', // No incluir archivos de desarrollo
-		'.husky', // Los hooks de git se configurarán en el nuevo proyecto
 		'dist', // No incluir archivos compilados
 		'build', // No incluir archivos de build
 		'.env', // No incluir variables de entorno específicas
