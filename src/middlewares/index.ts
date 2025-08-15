@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import responseMiddleware from './response.js';
-import errorHandler from '@/config/errors/express-handler.js';
+import errorHandler from 'src/config/errors/express-handler.js';
 import compression from 'compression';
 
 const limiter = rateLimit({

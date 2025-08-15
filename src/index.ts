@@ -5,7 +5,7 @@ import express from 'express';
 import type { Express } from 'express';
 import router from './routes.js';
 import { configureMiddlewares, errorHandler } from './middlewares/index.js';
-import { swaggerUi, specs } from '@/config/swagger.js';
+import { swaggerUi, specs } from 'src/config/swagger.js';
 
 const app: Express = express();
 

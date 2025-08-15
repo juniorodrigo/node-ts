@@ -8,13 +8,13 @@
 		"types": ["node"],
 		"jsx": "react-jsx",
 		"paths": {
-			"@/*": ["source/*"],
-			"@ops/*": ["source/services/ops/*"]
+			"@/*": ["src/*"],
+			"@ops/*": ["src/services/ops/*"]
 		},
 		"baseUrl": ".",
 		"jsxImportSource": "hono/jsx",
 		"outDir": "./dist",
-		"rootDir": "./source",
+		"rootDir": "src",
 		"resolveJsonModule": true,
 		"esModuleInterop": true
 	},

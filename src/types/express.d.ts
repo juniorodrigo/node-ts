@@ -1,6 +1,6 @@
 import 'express';
 import { CookieOptions } from 'express';
-import type { ResponseWithCookies } from './cookies.js';
+import type { ResponseWithCookies } from './cookies.ts';
 
 declare global {
 	namespace Express {
