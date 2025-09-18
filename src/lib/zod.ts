@@ -1,5 +1,4 @@
-import type { z } from 'zod';
-import { ZodIssueCode } from 'zod';
+import { z } from 'zod';
 
 interface FriendlyError {
 	field: string;
@@ -44,7 +43,7 @@ function buildErrorMessage(errors: FriendlyError[]): string {
 	// Utilizar forEach en lugar de map ya que solo necesitamos el efecto secundario
 	errors.forEach((error) => {
 		if (
-			error.code === ZodIssueCode.invalid_type &&
+			error.code === z.ZodIssueCode.invalid_type &&
 			error.expected &&
 			(error.received === 'undefined' || error.received === 'null')
 		) {

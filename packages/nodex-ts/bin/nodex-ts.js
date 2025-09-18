@@ -62,7 +62,13 @@ async function createApp() {
 
 		// Copiar archivos del template
 		console.log('📁 Copiando archivos del template...');
-		await fs.copy(sourceDir, targetDir);
+		await fs.copy(sourceDir, targetDir, {
+			// Incluir archivos ocultos (que comienzan con punto)
+			filter: (src, dest) => {
+				return true;
+			},
+			preserveTimestamps: true,
+		});
 
 		// Actualizar package.json con el nuevo nombre
 		const packageJsonPath = path.join(targetDir, 'package.json');
