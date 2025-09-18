@@ -1,4 +1,4 @@
-import 'express-async-errors';
+import './config/express-async-patch.js';
 import './config/logger.js';
 import express from 'express';
 import type { Express } from 'express';
