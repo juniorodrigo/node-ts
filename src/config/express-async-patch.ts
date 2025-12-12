@@ -20,28 +20,32 @@ const originalRouterMethods = {
 function wrapHandler(handler: any) {
 	if (typeof handler !== 'function') return handler;
 
-	return function wrappedHandler(this: any, ...args: any[]) {
-		try {
-			const result = handler.apply(this, args);
-
-			// Si es una promesa, capturar errores
-			if (result && typeof result.catch === 'function') {
-				const next = args[args.length - 1];
-				if (typeof next === 'function') {
+	// Detectar si es un error handler (4 parámetros) o middleware normal (3 parámetros)
+	if (handler.length === 4) {
+		// Error handler: (err, req, res, next)
+		return function wrappedErrorHandler(err: any, req: any, res: any, next: any) {
+			try {
+				const result = handler(err, req, res, next);
+				// Si es una promesa, capturar errores
+				if (result && typeof result.catch === 'function') {
 					result.catch(next);
 				}
+				return result;
+			} catch (error) {
+				return next(error);
 			}
-
-			return result;
-		} catch (error) {
-			const next = args[args.length - 1];
-			if (typeof next === 'function') {
-				next(error);
-			} else {
-				throw error;
+		};
+	} else {
+		// Middleware normal: (req, res, next)
+		return async function wrappedHandler(req: any, res: any, next: any) {
+			try {
+				const result = await handler(req, res, next);
+				return result;
+			} catch (error) {
+				return next(error);
 			}
-		}
-	};
+		};
+	}
 }
 
 // Función para envolver todos los handlers de una ruta

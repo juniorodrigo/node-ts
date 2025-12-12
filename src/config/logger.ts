@@ -29,6 +29,19 @@ const isDev = env.nodeEnv === 'development';
 
 // console.log('Logger config:', { NODE_ENV: env.nodeEnv, isDev, logLevel });
 
+// Función personalizada para formatear stack traces
+const formatStackTrace = (stack: string): string => {
+	if (!stack) return '';
+
+	return stack
+		.split('\n')
+		.map((line, index) => {
+			if (index === 0) return `    ${line}`; // Primera línea es el error message
+			return `    ${line.trim()}`; // Indentar todas las líneas del stack
+		})
+		.join('\n');
+};
+
 // Configuración de transports para Pino
 const pinoConfig: pino.LoggerOptions = {
 	level: logLevel,
@@ -37,9 +50,10 @@ const pinoConfig: pino.LoggerOptions = {
 				target: 'pino-pretty',
 				options: {
 					colorize: true,
-					translateTime: 'HH:MM:ss dd-mm-yyyy',
-					ignore: 'pid,hostname',
+					ignore: 'pid,hostname,time',
 					messageFormat: '{msg}',
+					// Eliminar customPrettifiers para evitar problemas de serialización
+					// El formateo se hará en el wrapper del logger
 				},
 			}
 		: {
@@ -56,6 +70,7 @@ const pinoConfig: pino.LoggerOptions = {
 									.replace(/\//g, '-')}.log`
 							),
 							mkdir: true,
+							encoding: 'utf8',
 						},
 					},
 
@@ -71,6 +86,7 @@ const pinoConfig: pino.LoggerOptions = {
 									.replace(/\//g, '-')}.log`
 							),
 							mkdir: true,
+							encoding: 'utf8',
 						},
 					},
 				],
@@ -80,57 +96,176 @@ const pinoConfig: pino.LoggerOptions = {
 // Crear el logger
 const logger = pino(pinoConfig);
 
+// Función auxiliar para serializar objetos de forma segura
+const serializeValue = (value: unknown): string => {
+	if (value === null) return 'null';
+	if (value === undefined) return 'undefined';
+	if (typeof value === 'string') return value;
+	if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+	if (value instanceof Error) {
+		return `${value.name}: ${value.message}${value.stack ? '\n' + value.stack : ''}`;
+	}
+	try {
+		return JSON.stringify(value, null, 2);
+	} catch {
+		return String(value);
+	}
+};
+
 // Función para crear un logger global
 const createGlobalLogger = (): any => {
 	const globalLogger = {
 		// Métodos estándar de Pino
-		trace: (message: string, meta?: Record<string, unknown>): void => {
-			if (meta) {
-				logger.trace(meta, message);
+		trace: (message: string | unknown, meta?: unknown): void => {
+			if (typeof message !== 'string') {
+				logger.trace({ data: message }, serializeValue(message));
+			} else if (meta !== undefined && meta !== null) {
+				if (typeof meta === 'object' && !Array.isArray(meta) && Object.keys(meta as object).length > 0) {
+					logger.trace(meta, message);
+				} else {
+					logger.trace({ data: meta }, `${message} ${serializeValue(meta)}`);
+				}
 			} else {
 				logger.trace(message);
 			}
 		},
-		debug: (message: string, meta?: Record<string, unknown>): void => {
-			if (meta) {
-				logger.debug(meta, message);
+		debug: (message: string | unknown, meta?: unknown): void => {
+			if (typeof message !== 'string') {
+				logger.debug({ data: message }, serializeValue(message));
+			} else if (meta !== undefined && meta !== null) {
+				if (typeof meta === 'object' && !Array.isArray(meta) && Object.keys(meta as object).length > 0) {
+					logger.debug(meta, message);
+				} else {
+					logger.debug({ data: meta }, `${message} ${serializeValue(meta)}`);
+				}
 			} else {
 				logger.debug(message);
 			}
 		},
-		info: (message: string, meta?: Record<string, unknown>): void => {
-			if (meta) {
-				logger.info(meta, message);
+		info: (message: string | unknown, meta?: unknown): void => {
+			if (typeof message !== 'string') {
+				logger.info({ data: message }, serializeValue(message));
+			} else if (meta !== undefined && meta !== null) {
+				if (typeof meta === 'object' && !Array.isArray(meta) && Object.keys(meta as object).length > 0) {
+					logger.info(meta, message);
+				} else {
+					logger.info({ data: meta }, `${message} ${serializeValue(meta)}`);
+				}
 			} else {
 				logger.info(message);
 			}
 		},
-		warn: (message: string, meta?: Record<string, unknown>): void => {
-			if (meta) {
-				logger.warn(meta, message);
+		warn: (message: string | unknown, meta?: unknown): void => {
+			if (typeof message !== 'string') {
+				logger.warn({ data: message }, serializeValue(message));
+			} else if (meta !== undefined && meta !== null) {
+				if (typeof meta === 'object' && !Array.isArray(meta) && Object.keys(meta as object).length > 0) {
+					logger.warn(meta, message);
+				} else {
+					logger.warn({ data: meta }, `${message} ${serializeValue(meta)}`);
+				}
 			} else {
 				logger.warn(message);
 			}
 		},
-		error: (message: string, meta?: Record<string, unknown>): void => {
-			if (meta) {
-				logger.error(meta, message);
+		error: (message: string | unknown, meta?: unknown): void => {
+			// Si el primer parámetro es un Error, tratarlo especialmente
+			if (message instanceof Error) {
+				const errorMeta = {
+					errorName: message.name,
+					errorMessage: message.message,
+					stack: message.stack,
+					...(meta && typeof meta === 'object' && !Array.isArray(meta) ? (meta as Record<string, unknown>) : {}),
+				};
+
+				if (isDev && message.stack) {
+					const formattedStack = formatStackTrace(message.stack);
+					const finalMessage = `${message.name}: ${message.message}\n${formattedStack}`;
+					logger.error(errorMeta, finalMessage);
+				} else {
+					logger.error(errorMeta, `${message.name}: ${message.message}`);
+				}
+				return;
+			}
+
+			// Si el mensaje no es un string, serializarlo
+			if (typeof message !== 'string') {
+				logger.error({ data: message }, serializeValue(message));
+				return;
+			}
+
+			// Caso normal: message es string
+			if (meta !== undefined && meta !== null) {
+				// Si meta es un objeto válido con claves
+				if (typeof meta === 'object' && !Array.isArray(meta) && Object.keys(meta as object).length > 0) {
+					const processedMeta = { ...(meta as Record<string, unknown>) };
+
+					// En desarrollo, formatear el stack trace en el mensaje directamente
+					if (isDev && processedMeta.stack && typeof processedMeta.stack === 'string') {
+						const formattedStack = formatStackTrace(processedMeta.stack);
+						const enhancedMessage = `${message}\n${formattedStack}`;
+
+						// Agregar información adicional al final del mensaje
+						const additionalInfo = [];
+						if (processedMeta.method) additionalInfo.push(`method: "${processedMeta.method}"`);
+						if (processedMeta.url) additionalInfo.push(`url: "${processedMeta.url}"`);
+						if (processedMeta.errorName) additionalInfo.push(`errorName: "${processedMeta.errorName}"`);
+						if (processedMeta.errorMessage) additionalInfo.push(`errorMessage: "${processedMeta.errorMessage}"`);
+
+						const finalMessage =
+							additionalInfo.length > 0 ? `${enhancedMessage}\n    ${additionalInfo.join('\n    ')}` : enhancedMessage;
+
+						// Remover campos que ya incluimos en el mensaje
+						delete processedMeta.stack;
+						delete processedMeta.method;
+						delete processedMeta.url;
+						delete processedMeta.errorName;
+						delete processedMeta.errorMessage;
+
+						logger.error(processedMeta, finalMessage);
+					} else {
+						logger.error(processedMeta, message);
+					}
+				} else {
+					// Si meta es un valor primitivo o array, incluirlo en el mensaje
+					logger.error({ data: meta }, `${message} ${serializeValue(meta)}`);
+				}
 			} else {
 				logger.error(message);
 			}
 		},
-		fatal: (message: string, meta?: Record<string, unknown>): void => {
-			if (meta) {
-				logger.fatal(meta, message);
+		fatal: (message: string | unknown, meta?: unknown): void => {
+			if (message instanceof Error) {
+				const errorMeta = {
+					errorName: message.name,
+					errorMessage: message.message,
+					stack: message.stack,
+					...(meta && typeof meta === 'object' && !Array.isArray(meta) ? (meta as Record<string, unknown>) : {}),
+				};
+				logger.fatal(errorMeta, `${message.name}: ${message.message}`);
+			} else if (typeof message !== 'string') {
+				logger.fatal({ data: message }, serializeValue(message));
+			} else if (meta !== undefined && meta !== null) {
+				if (typeof meta === 'object' && !Array.isArray(meta) && Object.keys(meta as object).length > 0) {
+					logger.fatal(meta, message);
+				} else {
+					logger.fatal({ data: meta }, `${message} ${serializeValue(meta)}`);
+				}
 			} else {
 				logger.fatal(message);
 			}
 		},
 
 		// Método personalizado para logs de desarrollo
-		log: (message: string, ...args: unknown[]): void => {
+		log: (message: string | unknown, ...args: unknown[]): void => {
 			if (isDev) {
-				logger.debug({ args }, message);
+				if (typeof message !== 'string') {
+					logger.debug({ data: message, additionalArgs: args.length > 0 ? args : undefined }, serializeValue(message));
+				} else if (args.length > 0) {
+					logger.debug({ args }, message);
+				} else {
+					logger.debug(message);
+				}
 			}
 		},
 
@@ -155,6 +290,19 @@ const createGlobalLogger = (): any => {
 			} else {
 				logger.info(logData, `${method} ${url} - ${statusCode}`);
 			}
+		},
+
+		// Método específico para errores con stack trace mejorado
+		errorWithStack: (message: string, error: Error, meta?: Record<string, unknown>): void => {
+			const logData = {
+				stack: error.stack,
+				errorName: error.name,
+				errorMessage: error.message,
+				...meta,
+			};
+
+			// Usar el método error que ya maneja el formateo
+			globalLogger.error(message, logData);
 		},
 	};
 
