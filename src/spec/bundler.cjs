@@ -9,13 +9,32 @@ class OpenAPIBundler {
 		this.specDir = __dirname;
 		this.modulesDir = path.join(this.specDir, 'modules');
 		this.outputFile = path.join(this.specDir, 'openapi.json');
-		this.modules = [
-			{ file: 'admin.json', name: 'admin' },
-			{ file: 'analitica.json', name: 'analitica' },
-			{ file: 'auth.json', name: 'auth' },
-			{ file: 'comercial.json', name: 'comercial' },
-			{ file: 'general.json', name: 'general' },
-		];
+		this.modules = this.discoverModules();
+	}
+
+	/**
+	 * Descubre automáticamente todos los módulos JSON en el directorio modules
+	 */
+	discoverModules() {
+		try {
+			if (!fs.existsSync(this.modulesDir)) {
+				console.warn(`⚠️ Directorio de módulos no encontrado: ${this.modulesDir}`);
+				return [];
+			}
+
+			const files = fs.readdirSync(this.modulesDir);
+			const modules = files
+				.filter((file) => file.endsWith('.json'))
+				.map((file) => ({
+					file,
+					name: path.parse(file).name,
+				}));
+
+			return modules;
+		} catch (error) {
+			console.error('❌ Error descubriendo módulos:', error.message);
+			return [];
+		}
 	}
 
 	/**
@@ -26,7 +45,7 @@ class OpenAPIBundler {
 			const content = fs.readFileSync(filePath, 'utf8');
 			return JSON.parse(content);
 		} catch (error) {
-			logger.error(`Error leyendo archivo ${filePath}:`, error.message);
+			console.error(`Error leyendo archivo ${filePath}:`, error.message);
 			process.exit(1);
 		}
 	}
@@ -113,8 +132,8 @@ class OpenAPIBundler {
 		}
 
 		if (missingFiles.length > 0) {
-			logger.error('❌ Archivos faltantes:', missingFiles.join(', '));
-			logger.error('Por favor, asegúrate de que todos los módulos existan en:', this.modulesDir);
+			console.error('❌ Archivos faltantes:', missingFiles.join(', '));
+			console.error('Por favor, asegúrate de que todos los módulos existan en:', this.modulesDir);
 			process.exit(1);
 		}
 	}
@@ -123,17 +142,23 @@ class OpenAPIBundler {
 	 * Construye la especificación completa
 	 */
 	bundle() {
-		logger.log('🔄 Iniciando bundling de especificaciones OpenAPI...');
+		console.log('🔄 Iniciando bundling de especificaciones OpenAPI...');
 
 		// Validar que todos los módulos existan
 		this.validateModules();
+
+		if (this.modules.length === 0) {
+			console.warn('⚠️ No se encontraron módulos para procesar');
+		} else {
+			console.log(`📦 Módulos encontrados: ${this.modules.map((m) => m.name).join(', ')}`);
+		}
 
 		// Crear especificación base
 		const combinedSpec = this.createBaseSpec();
 
 		// Procesar cada módulo
 		for (const module of this.modules) {
-			logger.log(`📁 Procesando módulo: ${module.name}`);
+			console.log(`📁 Procesando módulo: ${module.name}`);
 
 			const filePath = path.join(this.modulesDir, module.file);
 			const moduleSpec = this.readJsonFile(filePath);
@@ -174,9 +199,9 @@ class OpenAPIBundler {
 		try {
 			const content = JSON.stringify(spec, null, '\t');
 			fs.writeFileSync(this.outputFile, content, 'utf8');
-			logger.log(`✅ Especificación combinada guardada en: ${this.outputFile}`);
+			console.log(`✅ Especificación combinada guardada en: ${this.outputFile}`);
 		} catch (error) {
-			logger.error('❌ Error escribiendo archivo de salida:', error.message);
+			console.error('❌ Error escribiendo archivo de salida:', error.message);
 			process.exit(1);
 		}
 	}
@@ -194,14 +219,14 @@ class OpenAPIBundler {
 			const endTime = Date.now();
 			const duration = endTime - startTime;
 
-			logger.log(`\n🎉 Bundling completado exitosamente en ${duration}ms`);
-			logger.log(`📊 Resumen:`);
-			logger.log(`   - Tags: ${combinedSpec.tags.length}`);
-			logger.log(`   - Paths: ${Object.keys(combinedSpec.paths).length}`);
-			logger.log(`   - Schemas: ${Object.keys(combinedSpec.components.schemas).length}`);
-			logger.log(`   - Responses: ${Object.keys(combinedSpec.components.responses).length}`);
+			console.log(`\n🎉 Bundling completado exitosamente en ${duration}ms`);
+			console.log(`📊 Resumen:`);
+			console.log(`   - Tags: ${combinedSpec.tags.length}`);
+			console.log(`   - Paths: ${Object.keys(combinedSpec.paths).length}`);
+			console.log(`   - Schemas: ${Object.keys(combinedSpec.components.schemas).length}`);
+			console.log(`   - Responses: ${Object.keys(combinedSpec.components.responses).length}`);
 		} catch (error) {
-			logger.error('❌ Error durante el bundling:', error.message);
+			console.error('❌ Error durante el bundling:', error.message);
 			process.exit(1);
 		}
 	}

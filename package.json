@@ -13,6 +13,7 @@
 		"prisma:generate": "prisma generate",
 		"prisma:migrate": "prisma migrate dev --name test-migration",
 		"prisma:studio": "prisma studio",
+		"spec:bundle": "node src/spec/bundler.cjs",
 		"format": "prettier --write \"src/**/*.{ts,js}\" \"test/**/*.{ts,js}\"",
 		"format:check": "prettier --check \"src/**/*.{ts,js}\" \"test/**/*.{ts,js}\"",
 		"check": "pnpm run typecheck && pnpm run lint && pnpm run format:check",

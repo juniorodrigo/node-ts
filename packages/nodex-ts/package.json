@@ -1,6 +1,6 @@
 {
 	"name": "nodex-ts",
-	"version": "1.0.28",
+	"version": "1.0.29",
 	"description": "Plantilla de Node.js con TypeScript y Express para crear aplicaciones de backend",
 	"bin": {
 		"nodex-ts": "./bin/nodex-ts.js"
