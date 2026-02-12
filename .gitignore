@@ -117,3 +117,4 @@ cypress/screenshots/
 *.tgz
 /src/lib/prisma
 /prisma/migrations
+prisma/generated

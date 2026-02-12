@@ -9,14 +9,17 @@
 		"jsx": "react-jsx",
 		"paths": {
 			"@/*": ["src/*"],
-			"@ops/*": ["src/services/ops/*"]
+			"@ops/*": ["src/services/ops/*"],
+			"@prisma/zod": ["prisma/generated/zod/index.ts"]
 		},
 		"baseUrl": ".",
 		"jsxImportSource": "hono/jsx",
 		"outDir": "./dist",
-		"rootDir": "src",
+		"rootDir": ".",
+
 		"resolveJsonModule": true,
 		"esModuleInterop": true
 	},
-	"exclude": ["packages/**/*", "node_modules", "dist", "logs", "src/lib/prisma/**/*"]
+	"include": ["src/**/*", "prisma/generated/**/*"],
+	"exclude": ["packages/**/*", "node_modules", "dist", "logs", "prisma.config.ts"]
 }
