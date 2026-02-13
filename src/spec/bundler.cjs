@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const OpenAPIValidator = require('./validate-openapi.cjs');
+
 /**
  * Bundler para combinar módulos OpenAPI en un archivo único
  */
@@ -10,6 +12,9 @@ class OpenAPIBundler {
 		this.modulesDir = path.join(this.specDir, 'modules');
 		this.outputFile = path.join(this.specDir, 'openapi.json');
 		this.modules = this.discoverModules();
+		this.validator = new OpenAPIValidator();
+		this.skippedModules = [];
+		this.validModules = [];
 	}
 
 	/**
@@ -139,6 +144,34 @@ class OpenAPIBundler {
 	}
 
 	/**
+	 * Valida un módulo OpenAPI antes de añadirlo
+	 * @param {object} moduleSpec - Especificación del módulo
+	 * @param {string} moduleName - Nombre del módulo
+	 * @returns {boolean} - true si es válido, false si no
+	 */
+	validateModule(moduleSpec, moduleName) {
+		const result = this.validator.validate(moduleSpec, moduleName);
+
+		// Mostrar warnings
+		if (result.warnings.length > 0) {
+			result.warnings.forEach((warning) => {
+				console.warn(`   ⚠️  ${warning}`);
+			});
+		}
+
+		// Mostrar errores
+		if (!result.isValid) {
+			console.error(`   ❌ Módulo "${moduleName}" tiene errores de validación:`);
+			result.problems.forEach((problem) => {
+				console.error(`      • ${problem}`);
+			});
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Construye la especificación completa
 	 */
 	bundle() {
@@ -158,10 +191,29 @@ class OpenAPIBundler {
 
 		// Procesar cada módulo
 		for (const module of this.modules) {
-			console.log(`📁 Procesando módulo: ${module.name}`);
+			console.log(`\n📁 Procesando módulo: ${module.name}`);
 
 			const filePath = path.join(this.modulesDir, module.file);
-			const moduleSpec = this.readJsonFile(filePath);
+
+			// Leer el módulo
+			let moduleSpec;
+			try {
+				moduleSpec = this.readJsonFile(filePath);
+			} catch (error) {
+				console.error(`   ❌ Error leyendo ${module.name}: ${error.message}`);
+				this.skippedModules.push({ name: module.name, reason: `Error de lectura: ${error.message}` });
+				continue;
+			}
+
+			// Validar el módulo antes de añadirlo
+			if (!this.validateModule(moduleSpec, module.name)) {
+				this.skippedModules.push({ name: module.name, reason: 'Errores de validación OpenAPI' });
+				console.error(`   ⏭️  Módulo "${module.name}" omitido por errores de validación`);
+				continue;
+			}
+
+			console.log(`   ✅ Módulo "${module.name}" validado correctamente`);
+			this.validModules.push(module.name);
 
 			// Combinar tags
 			if (moduleSpec.tags) {
@@ -225,6 +277,22 @@ class OpenAPIBundler {
 			console.log(`   - Paths: ${Object.keys(combinedSpec.paths).length}`);
 			console.log(`   - Schemas: ${Object.keys(combinedSpec.components.schemas).length}`);
 			console.log(`   - Responses: ${Object.keys(combinedSpec.components.responses).length}`);
+
+			// Mostrar módulos procesados
+			if (this.validModules.length > 0) {
+				console.log(`\n✅ Módulos incluidos (${this.validModules.length}):`);
+				this.validModules.forEach((name) => {
+					console.log(`   • ${name}`);
+				});
+			}
+
+			// Mostrar módulos omitidos
+			if (this.skippedModules.length > 0) {
+				console.log(`\n⚠️  Módulos omitidos (${this.skippedModules.length}):`);
+				this.skippedModules.forEach(({ name, reason }) => {
+					console.log(`   • ${name}: ${reason}`);
+				});
+			}
 		} catch (error) {
 			console.error('❌ Error durante el bundling:', error.message);
 			process.exit(1);
